@@ -1,24 +1,28 @@
 var EventEmitter2 = require('eventemitter2').EventEmitter2;
 
+import Logger from './utils/logger';
+
 export default class Connection extends EventEmitter2 {
   private lastId: number;
   private vscode: any;
   private callbacks: Map<number, object>;
+  private logger: Logger;
 
   constructor() {
     super();
     this.lastId = 0;
     this.callbacks = new Map();
+    this.logger = new Logger();
 
     window.addEventListener('message', (event) => {
       this.onMessage(event);
     });
   }
 
-  send(method: string, params = {}): Promise<object> {
+  send<T>(method: string, params = {}): Promise<T> {
     const id = ++this.lastId;
 
-    console.log(`SEND ► `, method, params);
+    this.logger.log('SEND ► ', method, params);
 
     if (!this.vscode) {
       try {
@@ -47,21 +51,29 @@ export default class Connection extends EventEmitter2 {
 
     if (object) {
       if (object.callbackId) {
-        console.log('◀ RECV callback' + object.callbackId);
+        this.logger.log(`◀ RECV callbackId: ${object.callbackId}`);
         const callback: any = this.callbacks.get(object.callbackId);
         // Callbacks could be all rejected if someone has called `.dispose()`.
         if (callback) {
           this.callbacks.delete(object.callbackId);
           if (object.error) {
-            callback.reject(callback.error, callback.method, object);
+            callback.reject(object.error, callback.method, object);
           } else {
             callback.resolve(object.result);
           }
         }
       } else {
-        console.log('◀ RECV method: ' + object.method);
+        this.logger.log(`◀ RECV method: ${object.method}`);
         this.emit(object.method, object.result);
       }
+    }
+  }
+
+  enableVerboseLogging(verbose: boolean) {
+    if (verbose) {
+      this.logger.enable();
+    } else {
+      this.logger.disable();
     }
   }
 }

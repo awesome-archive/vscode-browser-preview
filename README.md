@@ -27,36 +27,50 @@ Make sure you have Google Chrome installed on your computer.
 - Debuggable. Launch urls and attach [Debugger for Chrome](https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome) to the browser view instance, and debug within VS Code.
 - Attach Chrome DevTools via `chrome://inspect`
 - Option to set the default startUrl via `browser-preview.startUrl`
+- Option to set the path to the chrome executable via `browser-preview.chromeExecutable`
+- Option to set the type of rendering via `browser-preview.format` with the support for `jpeg` (default one) and `png` formats
+
+## How to change the default start url / start page?
+Go to your settings, search for "browser preview" and set `browser-preview.startUrl` to your desired url.
+
+![](assets/settings.png)
 
 ## Launch and Debugging
 
-You can enable in-editor debugging of Browser Previews by installing [Debugger for Chrome](https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome), and configure VS Code's debugger to either attach or launch to the browser previews by using the following configuration:
+You can enable in-editor debugging of Browser Preview by installing [Debugger for Chrome](https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome), and configure VS Code's debugger to either attach or launch to the browser previews by using the following configuration:
 
 ```json
 {
-  "version": "0.1.0",
-  "configurations": [
-    {
-      "type": "browser-preview",
-      "request": "attach",
-      "name": "Browser Preview: Attach"
-    },
-    {
-      "type": "browser-preview",
-      "request": "launch",
-      "name": "Browser Preview: Launch",
-      "url": "http://localhost:3000"
-    }
-  ]
+    "version": "0.1.0",
+    "configurations": [
+        {
+            "type": "browser-preview",
+            "request": "attach",
+            "name": "Browser Preview: Attach"
+        },
+        {
+            "type": "browser-preview",
+            "request": "launch",
+            "name": "Browser Preview: Launch",
+            "url": "http://localhost:3000"
+        }
+    ]
 }
 ```
 
-The debug configuration also supports these additional properties: `webRoot`, `pathMapping`, `trace`, `sourceMapPathOverrides` and `urlFilter`. See https://github.com/Microsoft/vscode-chrome-debug#other-optional-launch-config-fields for details on how to use.
+The debug configuration also supports these additional properties: `webRoot`, `pathMapping`, `trace`, `sourceMapPathOverrides` and `urlFilter`. See <https://github.com/Microsoft/vscode-chrome-debug#other-optional-launch-config-fields> for details on how to use.
 
-## Additional configuration.
+### Watch It
+
+[Watch an animated gif](docs/DEBUGGING.md) showing how to open the preview and debug a browser app.
+
+## Additional configuration
 
 Browser Preview has the following settings:
 
 ```json
 "browser-preview.startUrl": // The default start url for new Browser Preview instances
+"browser-preview.verbose": false // Enable verbose logging of messages sent between VS Code and Chrome instance
+"browser-preview.chromeExecutable": // The full path to the executable, including the complete filename of the executable
+"browser-preview.format": // Option to set the type of rendering with the support for `jpeg` (default one) and `png` formats
 ```
